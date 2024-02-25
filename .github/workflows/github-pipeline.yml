@@ -33,9 +33,6 @@ jobs:
       - name: Run Unit Tests
         run: mvn test --file pom.xml
 
-      - name: Install zip
-        run: apt-get update && apt-get install -y zip
-
       - name: Create deployment package
         run: |
           zip -r deploy.zip . -x '*.git*'
