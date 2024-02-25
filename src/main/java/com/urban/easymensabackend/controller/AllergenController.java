@@ -8,17 +8,24 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller class for managing Allergens.
+ */
 @RestController
-@RequestMapping(value = "/allergens")
+@RequestMapping("/allergens")
 @RequiredArgsConstructor
 public class AllergenController {
+
     private final AllergenService allergenService;
 
+    /**
+     * Retrieves a list of all allergens.
+     *
+     * @return List of allergens.
+     */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Allergen> getAllergens() {
         return allergenService.getAllergens();
     }
-
-
 }
