@@ -47,6 +47,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: easymensa
           environment_name: Easymensa-dev
-          version_label: "v$(date +'%Y%m%d%H%M%S')"
+          use_existing_version_if_available: true
           region: eu-west-1
           deployment_package: deploy.zip
