@@ -39,7 +39,6 @@ jobs:
             echo "Failed to create deployment package."
             exit 1
           fi
-
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
