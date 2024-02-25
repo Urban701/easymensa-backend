@@ -11,6 +11,8 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:latest
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
@@ -21,28 +23,18 @@ jobs:
           java-version: '21'
           distribution: 'adopt'
 
+      - name: Install zip
+        run: apt-get update && apt-get install -y zip
+
       - name: Build with Maven
-        run: |
-          mvn -B package --file pom.xml
-          mvn_result=$?
-          if [ $mvn_result -ne 0 ]; then
-            echo "Maven build failed with exit code $mvn_result"
-            exit $mvn_result
-          fi
+        run: mvn -B package --file pom.xml
 
       - name: Run Unit Tests
         run: mvn test --file pom.xml
 
-      - name: Install zip
-        run: apt-get update && apt-get install -y zip
-
       - name: Create deployment package
         run: |
           zip -r deploy.zip . -x '*.git*'
-          if [ ! -f "deploy.zip" ]; then
-            echo "Failed to create deployment package."
-            exit 1
-          fi
 
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
