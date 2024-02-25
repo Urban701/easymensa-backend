@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 'adopt@1.21'
-          distribution: 'jdk'
+          distribution: 'adopt'  # Gültige Distribution (z.B. adopt, temurin, zulu)
 
       - name: Build with Maven
         run: mvn -B package --file pom.xml
