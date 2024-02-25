@@ -52,7 +52,4 @@ jobs:
           use_existing_version_if_available: true
           deployment_package: deploy.zip
 
-      - name: Ignore Yellow Health Status
-        if: ${{ always() }}  # Dieser Schritt wird immer ausgeführt
-        run: echo "Ignoring yellow health status."
 
