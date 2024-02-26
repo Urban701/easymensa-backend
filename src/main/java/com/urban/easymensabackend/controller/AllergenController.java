@@ -19,7 +19,7 @@ public class AllergenController {
     private final AllergenService allergenService;
 
     /**
-     * Retrieves a list of all allergens.
+     * Retrieves a list of all allergens..
      *
      * @return List of allergens.
      */
