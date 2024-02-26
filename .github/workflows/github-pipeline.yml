@@ -45,8 +45,8 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: easymensa
-          environment_name: Easymensa-dev
-          version_label: easymensa-source-1
+          environment_name: Easymensa-env
+          version_label: easymensa-source
           region: eu-west-1
           use_existing_version_if_available: true
           deployment_package: deploy.zip
