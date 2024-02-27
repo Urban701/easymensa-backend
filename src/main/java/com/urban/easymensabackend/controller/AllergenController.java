@@ -12,7 +12,7 @@ import java.util.List;
  * Controller class for managing Allergens.
  */
 @RestController
-@RequestMapping("/allergens")
+@RequestMapping("/api/allergens")
 @RequiredArgsConstructor
 public class AllergenController {
 

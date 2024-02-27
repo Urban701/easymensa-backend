@@ -17,8 +17,7 @@ public class AllergenServiceImpl implements AllergenService {
     private final AllergenRepository allergenRepository;
     @Override
     public List<Allergen> getAllergens() {
-        var allergen = allergenRepository.findAll();
-        return allergen;
+        return allergenRepository.findAll();
     }
 
 
