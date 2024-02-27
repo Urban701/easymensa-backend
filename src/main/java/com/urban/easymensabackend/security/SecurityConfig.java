@@ -8,11 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -22,9 +19,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> {
-                    request.requestMatchers("/api/**").permitAll();
-                }).formLogin(Customizer.withDefaults()).build();
+                .authorizeHttpRequests(request -> request.requestMatchers("/api/**")
+                        .permitAll())
+                .formLogin(Customizer.withDefaults()).build();
     }
 
     @Bean
@@ -32,10 +29,10 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("*"); // Hier kannst du deine erlaubten Ursprünge spezifizieren
+        config.addAllowedOriginPattern("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-        source.registerCorsConfiguration("/api/**", config); // Hier kannst du den Pfad festlegen, für den CORS erlaubt sein soll
+        source.registerCorsConfiguration("/api/**", config);
         return new CorsFilter(source);
     }
 
