@@ -11,9 +11,6 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: test version lbel name
-        run: |
-          echo ${{ github.sha }}
       - name: Checkout source code
         uses: actions/checkout@v2
 
@@ -35,13 +32,24 @@ jobs:
       - name: Run Unit Tests
         run: mvn test --file pom.xml
 
-      - name: Create deployment package
+      - name: Create deployment package and version label
         run: |
-          zip -r deploy.zip . -x '*.git*'
-          if [ ! -f "deploy.zip" ]; then
+          # Get the current commit's SHA
+          commit_sha=${{ github.sha }}
+
+          # Construct dynamic version and filename
+          dynamic_version="easymensa-version-${commit_sha}"
+          deployment_zip="${dynamic_version}.zip"
+
+          # Create deployment package with dynamic filename
+          zip -r "$deployment_zip" . -x '*.git*'
+
+          # Check if the zip file was created successfully
+          if [ ! -f "$deployment_zip" ]; then
             echo "Failed to create deployment package."
             exit 1
           fi
+
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -49,7 +57,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: easymensa
           environment_name: Easymensa-env
-          version_label: easymensa-version-1
+          version_label: ${{ dynamic_version }}
           region: eu-west-3
           use_existing_version_if_available: true
-          deployment_package: deploy.zip
+          deployment_package: "$deployment_zip"
