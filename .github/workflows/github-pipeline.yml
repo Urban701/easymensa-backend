@@ -47,7 +47,7 @@ jobs:
           application_name: easymensa
           environment_name: Easymensa-env
           version_label: easymensa-source
-          region: eu-west-1
+          region: eu-west-3
           use_existing_version_if_available: true
           deployment_package: deploy.zip
 
