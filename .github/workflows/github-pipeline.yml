@@ -20,64 +20,36 @@ jobs:
           java-version: '21'
           distribution: 'adopt'
 
+      - name: Build with Maven
+        run: |
+          mvn -B package --file pom.xml
+          mvn_result=$?
+          if [ $mvn_result -ne 0 ]; then
+            echo "Maven build failed with exit code $mvn_result"
+            exit $mvn_result
+          fi
+
       - name: Run Unit Tests
         run: mvn test --file pom.xml
 
-      - name: Upload JAR to S3
-        uses: aws/aws-actions/upload-artifacts@v2
+      - name: Create deployment package
+        run: |
+          zip -r deploy.zip . -x '*.git*'
+          if [ ! -f "deploy.zip" ]; then
+            echo "Failed to create deployment package."
+            exit 1
+          fi
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v21
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-3
-          bucket: elasticbeanstalk-eu-west-3-381491856670
-          path: app.jar
-
-        deploy:
-          needs: build
-          runs-on: ubuntu-latest
-          steps:
-            - uses: actions/checkout@v2
-            - name: Deploy Spring Boot App to AWS Elastic Beanstalk
-              uses: aws/aws-actions/elastic-beanstalk-deploy@v2
-              with:
-                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                aws-region: eu-west-3
-                application-name:  easymensa
-                environment-name:  Easymensa-env
-                version-label: ${{ github.sha }}
-                s3-bucket: elasticbeanstalk-eu-west-3-381491856670
-                s3-key: app.jar
-
-      ## - name: Build with Maven
-     #   run: |
-     #     mvn -B package --file pom.xml
-     #     mvn_result=$?
-     #     if [ $mvn_result -ne 0 ]; then
-     #       echo "Maven build failed with exit code $mvn_result"
-     #       exit $mvn_result
-     #     fi
-
-
-
-   #   - name: Create deployment package
-   #     run: |
-   #       zip -r deploy.zip . -x '*.git*'
-   #       if [ ! -f "deploy.zip" ]; then
-   #         echo "Failed to create deployment package."
-   #         exit 1
-   #       fi
-   #   - name: Deploy to EB
-   #     uses: einaregilsson/beanstalk-deploy@v21
-   #     with:
-   #       aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-   #       aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-   #       application_name: easymensa
-   #       environment_name: Easymensa-env
-   #       version_label: easymensa-version-1
-   #       region: eu-west-3
-   #       use_existing_version_if_available: true
-   #       deployment_package: deploy.zip
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: easymensa
+          environment_name: Easymensa-env
+          version_label: easymensa-source
+          region: eu-west-1
+          use_existing_version_if_available: true
+          deployment_package: deploy.zip
 
 
 
