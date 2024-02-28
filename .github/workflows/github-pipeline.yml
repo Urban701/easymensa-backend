@@ -1,4 +1,5 @@
 name: Continuous Integration
+
 on:
   push:
     branches:
@@ -34,11 +35,12 @@ jobs:
 
       - name: Create deployment package
         run: |
-          zip -r deploy-3.zip . -x '*.git*'
-          if [ ! -f "deploy-3.zip" ]; then
+          mv target/easymensa-backend-0.0.1-SNAPSHOT.jar
+          if [ ! -f "deploy-4.jar" ]; then
             echo "Failed to create deployment package."
             exit 1
           fi
+
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -46,6 +48,6 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: easymensa
           environment_name: Easymensa-env
-          version_label: easymensa-version-3
+          version_label: easymensa-version-4
           region: eu-west-3
-          deployment_package: deploy-3.zip
+          deployment_package: deploy-4.jar
