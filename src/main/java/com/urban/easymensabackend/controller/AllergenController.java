@@ -29,7 +29,7 @@ public class AllergenController {
         return allergenService.getAllergens();
     }
 
-    @GetMapping
+    @GetMapping(value = "/test")
     @ResponseStatus(HttpStatus.OK)
     public String test() {
         return "Test";
