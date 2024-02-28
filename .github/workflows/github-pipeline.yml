@@ -42,11 +42,16 @@ jobs:
           fi
           echo "JAR file found: $jar_file"
 
-      - name: Construct dynamic version label (set environment variable)
+      - name: Construct dynamic version label
         run: |
+          # Get the current commit's SHA
+          commit_sha=${{ github.sha }}
+
+          # Extract version from pom.xml (adjust command based on your structure)
           version=$(mvn help:evaluate -Dexpression=project.version -q -Dformatter=maven.clean)
-          dynamic_version="${version}-deploy"
-          echo "DYNAMIC_VERSION=$dynamic_version" >> $GITHUB_ENV  # Export to environment
+
+          # Combine elements into dynamic version
+          dynamic_version="${version}-${commit_sha}-${jar_file}"
           echo "Dynamic version: $dynamic_version"
 
       - name: Create deployment package
@@ -60,7 +65,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: easymensa
           environment_name: Easymensa-env
-          version_label: ${{ env.DYNAMIC_VERSION }}  # Use environment variable
+          version_label: "$dynamic_version"  # Include SHA and JAR filename
           region: eu-west-3
           use_existing_version_if_available: true
           deployment_package: "$dynamic_version.zip"
