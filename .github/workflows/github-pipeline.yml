@@ -32,32 +32,13 @@ jobs:
       - name: Run Unit Tests
         run: mvn test --file pom.xml
 
-      - name: Extract JAR file
-        run: |
-          cd target
-          jar_file=$(ls *.jar)  # Capture the JAR file name
-          if [ -z "$jar_file" ]; then
-            echo "No JAR file found in target directory."
-            exit 1
-          fi
-          echo "JAR file found: $jar_file"
-
-      - name: Construct dynamic version label
-        run: |
-          # Get the current commit's SHA
-          commit_sha=${{ github.sha }}
-
-          # Extract version from pom.xml (adjust command based on your structure)
-          version=$(mvn help:evaluate -Dexpression=project.version -q -Dformatter=maven.clean)
-
-          # Combine elements into dynamic version
-          dynamic_version="${version}-${commit_sha}-${jar_file}"
-          echo "Dynamic version: $dynamic_version"
-
       - name: Create deployment package
         run: |
-          zip -r "$dynamic_version.zip" target/$jar_file
-
+          zip -r deploy.zip . -x '*.git*'
+          if [ ! -f "deploy.zip" ]; then
+            echo "Failed to create deployment package."
+            exit 1
+          fi
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -65,7 +46,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: easymensa
           environment_name: Easymensa-env
-          version_label: "$dynamic_version"  # Include SHA and JAR filename
+          version_label: easymensa-version-1
           region: eu-west-3
           use_existing_version_if_available: true
-          deployment_package: "$dynamic_version.zip"
+          deployment_package: deploy.zip
