@@ -19,7 +19,4 @@ public class AllergenServiceImpl implements AllergenService {
     public List<Allergen> getAllergens() {
         return allergenRepository.findAll();
     }
-
-
-
 }
