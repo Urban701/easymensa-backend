@@ -1,5 +1,4 @@
 name: Continuous Integration
-
 on:
   push:
     branches:
@@ -7,9 +6,9 @@ on:
   pull_request:
     branches:
       - main
-
 jobs:
-  build_and_deploy:
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
@@ -21,33 +20,34 @@ jobs:
           java-version: '21'
           distribution: 'adopt'
 
-      - name: Build with Maven
-        run: |
-          mvn -B package --file pom.xml
-          mvn_result=$?
-          if [ $mvn_result -ne 0 ]; then
-            echo "Maven build failed with exit code $mvn_result"
-            exit $mvn_result
-          fi
-
       - name: Run Unit Tests
         run: mvn test --file pom.xml
 
-      - name: Create deployment package
-        run: |
-          mv target/easymensa-backend-0.0.1-SNAPSHOT.jar
-          if [ ! -f "deploy-4.jar" ]; then
-            echo "Failed to create deployment package."
-            exit 1
-          fi
+      - name: Build with Maven
+        run: mvn -B package -DskipTests --file pom.xml
 
+      - name: Upload JAR
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifact
+          path: target/easymensa-backend-0.0.1-SNAPSHOT.jar
+  deploy:
+    needs: build
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download JAR
+        uses: actions/download-artifact@v2
+        with:
+          name: artifact
       - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v21
+        uses: einaregilsson/beanstalk-deploy@v13
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          use_existing_version_if_available: false
           application_name: easymensa
           environment_name: Easymensa-env
-          version_label: easymensa-version-4
+          version_label: ${{github.SHA}}
           region: eu-west-3
-          deployment_package: deploy-4.jar
+          deployment_package: easymensa-backend-0.0.1-SNAPSHOT.jar
