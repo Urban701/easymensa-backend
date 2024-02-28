@@ -34,8 +34,8 @@ jobs:
 
       - name: Create deployment package
         run: |
-          zip -r deploy.zip . -x '*.git*'
-          if [ ! -f "deploy.zip" ]; then
+          zip -r deploy-1.zip . -x '*.git*'
+          if [ ! -f "deploy-1.zip" ]; then
             echo "Failed to create deployment package."
             exit 1
           fi
@@ -46,7 +46,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: easymensa
           environment_name: Easymensa-env
-          version_label: easymensa-version-1
+          version_label: easymensa-version-2
           region: eu-west-3
           use_existing_version_if_available: true
-          deployment_package: deploy.zip
+          deployment_package: deploy-1.zip
