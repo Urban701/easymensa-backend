@@ -32,13 +32,27 @@ jobs:
       - name: Run Unit Tests
         run: mvn test --file pom.xml
 
-      - name: Create deployment package
+      - name: Extract JAR file
         run: |
-          zip -r deploy.zip . -x '*.git*'
-          if [ ! -f "deploy.zip" ]; then
-            echo "Failed to create deployment package."
+          cd target
+          jar_file=$(ls *.jar)  # Capture the JAR file name
+          if [ -z "$jar_file" ]; then
+            echo "No JAR file found in target directory."
             exit 1
           fi
+          echo "JAR file found: $jar_file"
+
+      - name: Construct dynamic version label
+        run: |
+          # Extract version from pom.xml (adjust command based on your structure)
+          version=$(mvn help:evaluate -Dexpression=project.version -q -Dformatter=maven.clean)
+          # Generate dynamic version with a suffix, timestamp, or other desired format
+          dynamic_version="${version}-deploy"
+
+      - name: Create deployment package
+        run: |
+          zip -r "$dynamic_version.zip" target/$jar_file
+
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -46,10 +60,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: easymensa
           environment_name: Easymensa-env
-          version_label: easymensa-source
+          version_label: ${{ dynamic_version }}  # Use the dynamic version label
           region: eu-west-3
           use_existing_version_if_available: true
-          deployment_package: deploy.zip
-
-
-
+          deployment_package: "$dynamic_version.zip"  # Include the dynamic version in the file name
