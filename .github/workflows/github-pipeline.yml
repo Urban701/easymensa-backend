@@ -50,6 +50,9 @@ jobs:
             exit 1
           fi
 
+          # Set dynamic version environment variable
+          echo "DYNAMIC_VERSION=$dynamic_version" >> $GITHUB_ENV
+
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v21
         with:
@@ -57,7 +60,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: easymensa
           environment_name: Easymensa-env
-          version_label: ${{ dynamic_version }}
+          version_label: ${{ env.DYNAMIC_VERSION }}  # Use environment variable
           region: eu-west-3
           use_existing_version_if_available: true
           deployment_package: "$deployment_zip"
