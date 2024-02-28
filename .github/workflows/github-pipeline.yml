@@ -11,6 +11,8 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: test version lbel name
+        uses: echo ${{ github.sha }}
       - name: Checkout source code
         uses: actions/checkout@v2
 
