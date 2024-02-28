@@ -34,8 +34,8 @@ jobs:
 
       - name: Create deployment package
         run: |
-          zip -r deploy-2.zip . -x '*.git*'
-          if [ ! -f "deploy-2.zip" ]; then
+          zip -r deploy-3.zip . -x '*.git*'
+          if [ ! -f "deploy-3.zip" ]; then
             echo "Failed to create deployment package."
             exit 1
           fi
