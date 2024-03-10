@@ -19,5 +19,4 @@ public class TestEasymensaBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.from(EasymensaBackendApplication::main).with(TestEasymensaBackendApplication.class).run(args);
 	}
-
 }

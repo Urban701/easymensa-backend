@@ -1,6 +1,6 @@
 package com.urban.easymensabackend.service;
 
-import com.urban.easymensabackend.model.Allergen;
+import com.urban.easymensabackend.model.menu.Allergen;
 
 import java.util.List;
 

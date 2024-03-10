@@ -1,13 +1,17 @@
-package com.urban.easymensabackend.model;
+package com.urban.easymensabackend.model.menu;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Entity
-@Table(name = "Allergen")
+@Table(name = "allergen")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Allergen {
@@ -25,4 +29,7 @@ public class Allergen {
 
     @Column(name = "short_name")
     private String shortName;
+
+    @ManyToMany(mappedBy = "allergens")
+    private Set<Food> foods;
 }

@@ -1,6 +1,6 @@
 package com.urban.easymensabackend.service.impl;
 
-import com.urban.easymensabackend.model.Allergen;
+import com.urban.easymensabackend.model.menu.Allergen;
 import com.urban.easymensabackend.repository.AllergenRepository;
 import com.urban.easymensabackend.service.AllergenService;
 import lombok.RequiredArgsConstructor;

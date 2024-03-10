@@ -1,6 +1,6 @@
 package com.urban.easymensabackend.controller;
 
-import com.urban.easymensabackend.model.Allergen;
+import com.urban.easymensabackend.model.menu.Allergen;
 import com.urban.easymensabackend.service.AllergenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/allergens")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200/")
 public class AllergenController {
 
     private final AllergenService allergenService;
