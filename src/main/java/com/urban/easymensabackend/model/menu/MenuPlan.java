@@ -1,34 +1,27 @@
 package com.urban.easymensabackend.model.menu;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
+import lombok.*;
 
 @Entity
 @Table(name = "menu_plan")
 @Data
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuPlan {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+  @Id
+  @Column(name = "date")
+  private LocalDate date;
 
-    @Column(name = "date")
-    private OffsetDateTime date;
-
-    @ManyToMany
-    @JoinTable(
-            name = "menuplan_food",
-            joinColumns = @JoinColumn(name = "menuplan_id"),
-            inverseJoinColumns = @JoinColumn(name = "food_id")
-    )
-    private Set<Food> foods;
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+      name = "menuplan_food",
+      joinColumns = @JoinColumn(name = "menuplan_id"),
+      inverseJoinColumns = @JoinColumn(name = "food_id"))
+  private Set<Food> foods = new HashSet<>();
 }

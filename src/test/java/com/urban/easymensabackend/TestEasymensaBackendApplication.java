@@ -10,13 +10,15 @@ import org.testcontainers.utility.DockerImageName;
 @TestConfiguration(proxyBeanMethods = false)
 public class TestEasymensaBackendApplication {
 
-	@Bean
-	@ServiceConnection
-	MariaDBContainer<?> mariaDbContainer() {
-		return new MariaDBContainer<>(DockerImageName.parse("mariadb:10.11"));
-	}
+  @Bean
+  @ServiceConnection
+  MariaDBContainer<?> mariaDbContainer() {
+    return new MariaDBContainer<>(DockerImageName.parse("mariadb:10.11"));
+  }
 
-	public static void main(String[] args) {
-		SpringApplication.from(EasymensaBackendApplication::main).with(TestEasymensaBackendApplication.class).run(args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.from(EasymensaBackendApplication::main)
+        .with(TestEasymensaBackendApplication.class)
+        .run(args);
+  }
 }
