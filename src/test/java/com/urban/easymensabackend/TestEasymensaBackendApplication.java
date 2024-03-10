@@ -13,7 +13,7 @@ public class TestEasymensaBackendApplication {
 	@Bean
 	@ServiceConnection
 	MariaDBContainer<?> mariaDbContainer() {
-		return new MariaDBContainer<>(DockerImageName.parse("mariadb:latest"));
+		return new MariaDBContainer<>(DockerImageName.parse("mariadb:10.11"));
 	}
 
 	public static void main(String[] args) {
